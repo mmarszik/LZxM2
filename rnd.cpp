@@ -1,17 +1,19 @@
+#include <random>
 #include <cstdlib>
 #include "rnd.h"
 
+using TRnd = std::ranlux48;
+
+static TRnd rnd;
+
+uint32_t mySrand() {
+    const uint32_t seed = std::random_device()();
+    rnd.seed( seed );
+    return seed;
+}
 
 int myRand() {
-    static uint32_t x = 3;
-    for( uint32_t i=0 ; i<x+6 ; i++ ) {
-        rand();
-    }
-    x += 2;
-    if( x > 30 ) {
-        x = 3;
-    }
-    return rand();
+    return rnd();
 }
 
 

@@ -16,3 +16,8 @@ void byteShuffle(
 void moveToFront(
     tdata &data
 );
+
+void moveToFront16(
+    tdata &data
+);
+

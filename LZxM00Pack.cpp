@@ -45,10 +45,10 @@ void LZxM00Pack::pack(
 ) {
     BitBuff bitBuf(output);
 
-    bitBuf += (uint32_t)input.size();
-    bitBuf += dictSize;
-    bitBuf += maxWord;
-    bitBuf += minWord;
+//    bitBuf += (uint32_t)input.size();
+//    bitBuf += dictSize;
+//    bitBuf += maxWord;
+//    bitBuf += minWord;
 
     for( size_t i=0 ; i<input.size() ; ) {
         uint32_t pos  = 0;

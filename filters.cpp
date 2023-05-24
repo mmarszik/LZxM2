@@ -57,3 +57,23 @@ void moveToFront(
     }
 }
 
+
+
+void moveToFront16(
+    tdata &data
+) {
+    std::vector<uint16_t> pos(1<<16);
+    for( uint32_t i=0 ; i<pos.size() ; i++ ) {
+        pos[i] = i;
+    }
+    for( uint32_t i=0 ; i+1<data.size() ; i+=2 ) {
+        const uint16_t tmp = data[i+0] * 256 + data[i+1];
+        const uint32_t idx = std::find( pos.cbegin() , pos.cend() , tmp ) - pos.cbegin();
+        for( uint32_t j=idx ; j>0 ; j-- ) {
+            pos[j] = pos[j-1];
+        }
+        pos[0] = tmp;
+        data[i+0] = (uint8_t)(idx & 0xFF);
+        data[i+1] = (uint8_t)((idx >> 8) & 0xFF);
+    }
+}

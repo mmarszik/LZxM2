@@ -13,33 +13,46 @@
 
 
 struct Opt {
-    uint32_t dictSize1  = 12;
-    uint32_t maxWord1   =  2;
-    uint32_t minWord1   =  2;
-    uint32_t byteShuff1 =  3;
-    uint32_t bitShuff1  =  8;
-    bool     moveToFront1 = false;
+//    uint32_t dictSize1  = 14;
+//    uint32_t maxWord1   =  1;
+//    uint32_t minWord1   =  3;
+//    uint32_t byteShuff1 =  3;
+//    uint32_t bitShuff1  =  1;
+//    bool     moveToFront1 = false;
+//    bool isTwo = false;
+//    uint32_t dictSize2 = 14;
+//    uint32_t maxWord2 = 1;
+//    uint32_t minWord2 = 3;
+
+    uint32_t dictSize1  = 16;
+    uint32_t maxWord1   =  7;
+    uint32_t minWord1   =  4;
+    uint32_t byteShuff1 =  1;
+    uint32_t bitShuff1  =  1;
+    bool     moveToFront1 = true;
     bool isTwo = false;
-    uint32_t dictSize2 = 12;
-    uint32_t maxWord2 = 2;
+    uint32_t bitShuff2  =  24;
+    uint32_t dictSize2 = 8;
+    uint32_t maxWord2 = 4;
     uint32_t minWord2 = 2;
+
 
     void chaos() {
         switch( myRand() % (isTwo ? 10 : 7) ) {
             case 0:
-                myChaos( dictSize1 , 2 , 16 );
+                myChaos( dictSize1 , 2 , 18 );
                 break;
             case 1:
-                myChaos( maxWord1  , 1 ,  6 );
+                myChaos( maxWord1  , 1 , 12 );
                 break;
             case 2:
-                myChaos( minWord1  , 1 , 32 );
+                myChaos( minWord1  , 1 , 64 );
                 break;
             case 3:
-                myChaos( byteShuff1 , 1 , 32 );
+                myChaos( byteShuff1 , 1 , 1024 );
                 break;
             case 4:
-                myChaos( bitShuff1 , 1 , 64 );
+                myChaos( bitShuff1 , 1 , 4096 );
                 break;
             case 5:
                 moveToFront1 = !moveToFront1;
@@ -48,13 +61,13 @@ struct Opt {
                 isTwo = !isTwo;
                 break;
             case 7:
-                myChaos( dictSize2 , 2 , 16 );
+                myChaos( dictSize2 , 2 , 18 );
                 break;
             case 8:
-                myChaos( maxWord2  , 1 ,  6 );
+                myChaos( maxWord2  , 1 ,  12 );
                 break;
             case 9:
-                myChaos( minWord2  , 1 , 32 );
+                myChaos( minWord2  , 1 , 64 );
                 break;
         }
     }
@@ -118,7 +131,7 @@ struct hash_fn
 using TOptBuff = std::unordered_set<Opt,hash_fn>;
 
 int main( int argc, char *argv[] ) {
-    srand(1235);
+    std::cout << "seed: " << mySrand() << std::endl;
     std::ifstream inpFile( argv[1], std::ios::binary );
     tdata data(std::istreambuf_iterator<char>(inpFile), {});
     std::cout << "read from '" << argv[1] << "' " << data.size() << " bytes." << std::endl;
@@ -131,9 +144,9 @@ int main( int argc, char *argv[] ) {
 
     TOptBuff optSet;
 
-//    for( uint32_t i=0 ; i<1000 ; i++ ) {
-//        curr.chaos();
-//    }
+    for( uint32_t i=0 ; i<10000 ; i++ ) {
+        curr.chaos();
+    }
 
 
     for( uint32_t loop=0 ; true ; loop++ ) {
@@ -163,13 +176,13 @@ int main( int argc, char *argv[] ) {
 
         {
             tdata tmp;
-            LZxM00Pack::packH(output,tmp,curr.dictSize1,curr.maxWord1,curr.minWord1);
+            LZxM00Pack::pack(output,tmp,curr.dictSize1,curr.maxWord1,curr.minWord1);
             output = tmp;
         }
 
         if( curr.isTwo ) {
             tdata tmp;;
-            LZxM00Pack::packH(output,tmp,curr.dictSize2,curr.maxWord2,curr.minWord2);
+            LZxM00Pack::pack(output,tmp,curr.dictSize2,curr.maxWord2,curr.minWord2);
             output = tmp;
         }
 
@@ -194,7 +207,7 @@ int main( int argc, char *argv[] ) {
             std::cout << ratio << "%" << std::endl;
             bestRatio = ratio;
         } else {
-            if( rand() % 3 == 0 ) {
+            if( myRand() % 3 == 0 ) {
                 curr = best;
             }
             std::cout << "loop: " << loop << std::endl;
@@ -207,22 +220,6 @@ int main( int argc, char *argv[] ) {
 
     }
 
-
-
-
-
-//    if( byteShuffle1 > 0 ) {
-//        makeByteShuffle(data,byteShuffle1);
-//    }
-//    if( useMTF ) {
-//        moveToFront( data );
-//    }
-//    if( byteShuffle2 > 0 ) {
-//        makeByteShuffle(data,byteShuffle2);
-//    }
-//    const uint32_t bitStat = lzStat(data);
-//    const double stat = bitStat / 8;
-//    std::cout << "stat: " << bitStat << " " << (data.size() - stat) / data.size() * 100 << "%" << std::endl;
     return 0;
 }
 
